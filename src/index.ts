@@ -11,16 +11,19 @@ const discord = new WebhookClient({
 });
 
 const instagram = new Instagram({
-  username: process.env.USERNAME,
-  password: process.env.PASSWORD,
+  username: process.env.AUTH_USERNAME,
+  password: process.env.AUTH_PASSWORD,
 });
 
 const fetchFollowers = async () => {
   console.log('Fetching followers');
   try {
-    const { count } = await instagram.getFollowers({
-      userId: process.env.USER_ID,
+    const user = await instagram.getUserByUsername({
+      username: process.env.USERNAME,
     });
+
+    const count = user.edge_followed_by.count;
+
     if (existsSync('followers')) {
       const prevCount = Number(readFileSync('followers').toString());
       if (count === prevCount) return;
@@ -32,10 +35,12 @@ const fetchFollowers = async () => {
     writeFileSync('followers', count.toString());
   } catch (e) {
     console.log('Fetch failed');
+    console.log(e);
   }
 };
 
 const main = async () => {
+  await instagram.login();
   fetchFollowers();
   setInterval(fetchFollowers, 1000 * 60);
 };
