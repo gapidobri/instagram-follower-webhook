@@ -25,14 +25,13 @@ const fetchFollowers = async () => {
       const prevCount = Number(readFileSync('followers').toString());
       if (count === prevCount) return;
     }
-    console.log(count);
 
+    console.log(count);
     discord.send(`Fundl now has ${count} followers!`);
 
     writeFileSync('followers', count.toString());
   } catch (e) {
     console.log('Fetch failed');
-    discord.send('Fetching followers failed');
   }
 };
 
