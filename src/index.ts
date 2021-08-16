@@ -35,7 +35,8 @@ const fetchFollowers = async () => {
     writeFileSync('followers', count.toString());
   } catch (e) {
     console.log('Fetch failed');
-    console.log(e);
+    await instagram.login();
+    fetchFollowers();
   }
 };
 
